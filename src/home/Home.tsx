@@ -1,61 +1,66 @@
-import React, { useState, useEffect } from "react";
-import {
-  StyleSheet,
-  Text,
-  View,
-  Dimensions,
-  Animated,
-  TouchableOpacity,
-} from "react-native";
-import {
-  Navigation,
-  Route,
-  Modal,
-  CachedList,
-  StorageCache,
-} from "../../common/types";
+import React, { useState, useEffect, Fragment } from "react";
+import { StyleSheet, Text, View } from "react-native";
+import { Navigation, Modal } from "../../common/types";
 import { FontAwesome } from "@expo/vector-icons";
 import { Container } from "../../common/components/Container";
 import { TextInput } from "../../common/components/TextInput";
 import { Button } from "../../common/components/Button";
 import { colors } from "../../common/colors";
-import { config } from "../../common/config";
-import AsyncStorage from "@react-native-community/async-storage";
-import Swipeable from "react-native-gesture-handler/Swipeable";
-import { RemoveAction } from "../../common/components/RemoveAction";
 import { HomeLists } from "./HomeLists";
+import { gql, useLazyQuery } from "@apollo/client";
+import { Toaster } from "../../common/components/Toaster";
 
 type Props = {
   navigation: Navigation;
 };
 
+const QUERY_LIST = gql`
+  query shoppingList($id: ID!) {
+    shoppingList(id: $id) {
+      id
+      name
+    }
+  }
+`;
+
 const Home = ({ navigation }: Props) => {
+  const [name, setName] = useState("");
+  const [listId, setListId] = useState("");
+  const [getList, { loading, data, error }] = useLazyQuery(QUERY_LIST);
+
+  useEffect(() => {}, [data, error]);
+
+  const submit = () => {
+    if (name && listId) {
+      getList({ variables: { id: listId } });
+    }
+  };
+
   return (
-    <Container scrollable={true} spacing={false} style={styles.container}>
-      <View style={styles.content}>
-        <Text style={[styles.heading, styles.spacing]}>Shopping List</Text>
-        <FontAwesome
-          name="shopping-basket"
-          size={200}
-          style={styles.spacing}
-          color={colors.secondary}
-        />
-        <TextInput placeholder="Name" onChange={() => {}} />
-        <TextInput placeholder="List ID" onChange={() => {}} />
-        <Button
-          text="Enter"
-          onPress={() => navigation.navigate(Route.List)}
-          style={styles.spacing}
-        />
-        <Button
-          text="Create"
-          type="secondary"
-          onPress={() => navigation.navigate(Modal.CreateList)}
-          style={styles.spacing}
-        />
-      </View>
-      <HomeLists navigation={navigation} />
-    </Container>
+    <Fragment>
+      <Toaster type="Error" message="Couldn't find the list" show={!!error} />
+      <Container scrollable={true} spacing={false} style={styles.container}>
+        <View style={styles.content}>
+          <Text style={[styles.heading, styles.spacing]}>Shopping List</Text>
+          <FontAwesome
+            name="shopping-basket"
+            size={200}
+            style={styles.spacing}
+            color={colors.secondary}
+          />
+          <TextInput placeholder="Name" onChange={setName} />
+          <TextInput placeholder="List ID" onChange={setListId} />
+          <Button text="Enter" onPress={submit} style={styles.spacing} />
+          <Button
+            text="Create"
+            type="secondary"
+            onPress={() => navigation.navigate(Modal.CreateList)}
+            style={styles.spacing}
+          />
+        </View>
+        <HomeLists navigation={navigation} />
+      </Container>
+    </Fragment>
   );
 };
 

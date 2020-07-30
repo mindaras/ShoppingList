@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { StyleSheet } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -26,7 +27,7 @@ const ListStackNavigator = ({ navigation }: { navigation: Navigation }) => {
   return (
     <ListStack.Navigator
       screenOptions={({ route }) => ({
-        cardStyle: { backgroundColor: "#fff" },
+        cardStyle: styles.screen,
         tabBarIcon: ({ color, size }) => (
           <FontAwesome
             name={route.name === Route.List ? "list" : "history"}
@@ -50,8 +51,8 @@ const MainStackNavigator = () => (
   <MainStack.Navigator
     screenOptions={{
       headerTintColor: colors.primary,
-      headerTitleStyle: { color: "#000" },
-      cardStyle: { backgroundColor: "#fff" },
+      headerTitleStyle: styles.header,
+      cardStyle: styles.screen,
     }}
   >
     <MainStack.Screen name={Route.Home} component={Home} />
@@ -70,7 +71,7 @@ const App = () => (
     <NavigationContainer>
       <RootStack.Navigator
         mode="modal"
-        screenOptions={{ cardStyle: { backgroundColor: "#fff" } }}
+        screenOptions={{ cardStyle: styles.screen }}
       >
         <RootStack.Screen
           name="Main"
@@ -101,3 +102,12 @@ const App = () => (
 );
 
 export default App;
+
+const styles = StyleSheet.create({
+  screen: {
+    backgroundColor: "#fff",
+  },
+  header: {
+    color: "#000",
+  },
+});
