@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { StyleSheet } from "react-native";
-import { Navigation, StorageCache } from "../../common/types";
+import { Navigation, Store } from "../../common/types";
 import { Container } from "../../common/components/Container";
 import { TextInput } from "../../common/components/TextInput";
 import { Button } from "../../common/components/Button";
@@ -25,6 +25,7 @@ type Props = {
 
 const ListCreationModal = ({ navigation }: Props) => {
   const [name, setName] = useState("");
+  const [username, setUsername] = useState("");
   const [createList, { data }] = useMutation(CREATE_LIST);
 
   useEffect(() => {
@@ -34,15 +35,15 @@ const ListCreationModal = ({ navigation }: Props) => {
 
     AsyncStorage.getItem(config.storageKey)
       .then((value) => {
-        const cache: StorageCache = value ? JSON.parse(value) : { lists: {} };
-        cache.lists[item.id] = item;
-        return AsyncStorage.setItem(config.storageKey, JSON.stringify(cache));
+        const store: Store = value ? JSON.parse(value) : { lists: {} };
+        store.lists[item.id] = { ...item, username };
+        return AsyncStorage.setItem(config.storageKey, JSON.stringify(store));
       })
       .then(navigation.goBack);
   }, [data]);
 
   const submit = () => {
-    if (name) {
+    if (name.trim() && username.trim()) {
       createList({ variables: { name } });
     }
   };
@@ -50,7 +51,8 @@ const ListCreationModal = ({ navigation }: Props) => {
   return (
     <Container style={styles.container}>
       <FontAwesome name="list" size={200} color={colors.secondary} />
-      <TextInput placeholder="Name" onChange={setName} />
+      <TextInput placeholder="List name" onChange={setName} />
+      <TextInput placeholder="Your name" onChange={setUsername} />
       <Button onPress={submit} text="Create" />
     </Container>
   );

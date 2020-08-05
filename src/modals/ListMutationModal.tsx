@@ -4,13 +4,13 @@ import { Navigation, Modal } from "../../common/types";
 import { Container } from "../../common/components/Container";
 import { TextInput } from "../../common/components/TextInput";
 import { Button } from "../../common/components/Button";
-import { Route } from "@react-navigation/native";
+import { Route as NavigationRoute } from "@react-navigation/native";
 import { FontAwesome } from "@expo/vector-icons";
 import { colors } from "../../common/colors";
 
 type Props = {
   navigation: Navigation;
-  route: Route<Modal.UpdateItems>;
+  route: NavigationRoute<Modal.UpdateItems>;
 };
 
 type RouteParams = {

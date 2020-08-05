@@ -26,7 +26,7 @@ const Lists = ({ navigation }: Props) => {
       <FlatList
         data={lists}
         keyExtractor={({ id }) => id}
-        renderItem={({ item: { id, name } }) => (
+        renderItem={({ item: { id, name, username } }) => (
           <Swipeable
             containerStyle={styles.separation}
             childrenContainerStyle={styles.item}
@@ -37,7 +37,12 @@ const Lists = ({ navigation }: Props) => {
             rightThreshold={screenWidth / 5}
           >
             <TouchableOpacity
-              onPress={() => navigation.navigate(Route.List, { id })}
+              onPress={() => {
+                navigation.navigate(Route.List, {
+                  list: { id, name },
+                  username,
+                });
+              }}
               style={styles.content}
             >
               <Text style={styles.text}>{name}</Text>

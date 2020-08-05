@@ -23,7 +23,7 @@ const HomeLists = ({ navigation }: Props) => {
   return (
     <View>
       <View style={styles.spacing}>
-        {lists.slice(0, 3).map(({ id, name }) => (
+        {lists.slice(0, 3).map(({ id, name, username }) => (
           <Swipeable
             key={id}
             containerStyle={styles.separation}
@@ -35,7 +35,12 @@ const HomeLists = ({ navigation }: Props) => {
             rightThreshold={screenWidth / 5}
           >
             <TouchableOpacity
-              onPress={() => navigation.navigate(Route.List, { id })}
+              onPress={() => {
+                navigation.navigate(Route.List, {
+                  list: { id, name },
+                  username,
+                });
+              }}
               style={styles.content}
             >
               <Text style={styles.text}>{name}</Text>

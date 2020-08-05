@@ -5,7 +5,12 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Home } from "./src/home/Home";
 import { FontAwesome } from "@expo/vector-icons";
-import { Navigation, Modal, Route } from "./common/types";
+import {
+  Navigation,
+  Modal,
+  Route,
+  ShoppingList as ShoppingListType,
+} from "./common/types";
 import { colors } from "./common/colors";
 import { ListMutationModal } from "./src/modals/ListMutationModal";
 import { List } from "./src/list/List";
@@ -14,15 +19,31 @@ import { ListCreationModal } from "./src/modals/ListCreationModal";
 import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
 import { config } from "./common/config";
 import { Lists } from "./src/lists/Lists";
+import { Route as NavigationRoute } from "@react-navigation/native";
 
 const RootStack = createStackNavigator();
 const MainStack = createStackNavigator();
 const ListStack = createBottomTabNavigator();
 
-const ListStackNavigator = ({ navigation }: { navigation: Navigation }) => {
+const ListStackNavigator = ({
+  navigation,
+  route,
+}: {
+  navigation: Navigation;
+  route: NavigationRoute<Route.List | Route.History>;
+}) => {
+  const { list, username } = route.params as {
+    list: ShoppingListType;
+    username: string;
+  };
+
   useEffect(() => {
-    navigation.setOptions({ title: "Jessica's list" });
+    navigation.setOptions({ title: list.name });
   }, []);
+
+  const ShoppingList = (props: any) => (
+    <List list={list} username={username} {...props} />
+  );
 
   return (
     <ListStack.Navigator
@@ -41,7 +62,7 @@ const ListStackNavigator = ({ navigation }: { navigation: Navigation }) => {
         inactiveTintColor: colors.pale,
       }}
     >
-      <ListStack.Screen name={Route.List} component={List} />
+      <ListStack.Screen name={Route.List} component={ShoppingList} />
       <ListStack.Screen name={Route.History} component={HistoryList} />
     </ListStack.Navigator>
   );
@@ -71,7 +92,11 @@ const App = () => (
     <NavigationContainer>
       <RootStack.Navigator
         mode="modal"
-        screenOptions={{ cardStyle: styles.screen }}
+        screenOptions={{
+          headerTintColor: colors.primary,
+          headerTitleStyle: styles.header,
+          cardStyle: styles.screen,
+        }}
       >
         <RootStack.Screen
           name="Main"

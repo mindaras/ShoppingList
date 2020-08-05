@@ -1,17 +1,17 @@
-import { Navigation, CachedList, StorageCache } from "../types";
+import { Navigation, StoredList, Store } from "../types";
 import { useState, useEffect } from "react";
 import AsyncStorage from "@react-native-community/async-storage";
 import { config } from "../config";
 
 const useLists = (navigation?: Navigation) => {
-  const [lists, setLists] = useState<CachedList[]>([]);
+  const [lists, setLists] = useState<StoredList[]>([]);
 
   const getLists = async () => {
     const storageValue = await AsyncStorage.getItem(config.storageKey);
 
     if (!storageValue) return;
 
-    const { lists }: StorageCache = JSON.parse(storageValue);
+    const { lists }: Store = JSON.parse(storageValue);
 
     if (lists) setLists(Object.values(lists));
   };
@@ -26,10 +26,10 @@ const useLists = (navigation?: Navigation) => {
 
   const removeList = async (listId: string) => {
     const storageValue = await AsyncStorage.getItem(config.storageKey);
-    const cache = JSON.parse(storageValue as string);
-    delete cache.lists[listId];
-    await AsyncStorage.setItem(config.storageKey, JSON.stringify(cache));
-    setLists(Object.values(cache.lists));
+    const store = JSON.parse(storageValue as string);
+    delete store.lists[listId];
+    await AsyncStorage.setItem(config.storageKey, JSON.stringify(store));
+    setLists(Object.values(store.lists));
   };
 
   return { lists, setLists, removeList };

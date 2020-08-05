@@ -42,17 +42,25 @@ enum ShoppingListItemType {
   HISTORY = "HISTORY",
 }
 
-type CachedList = {
+type StoredList = {
   id: string;
   name: string;
+  username: string;
 };
 
-type StorageLists = {
-  [id: string]: CachedList;
+type StoredLists = {
+  [id: string]: StoredList;
 };
 
-type StorageCache = {
-  lists: StorageLists;
+type Store = {
+  lists: StoredLists;
+};
+
+type ShoppingList = {
+  id: string;
+  name: string;
+  createdAt: number;
+  updatedAt: number;
 };
 
 export {
@@ -62,7 +70,8 @@ export {
   ShoppingListItemStatus,
   ShoppingListItem,
   ShoppingListItemType,
-  CachedList,
-  StorageLists,
-  StorageCache,
+  StoredList,
+  StoredLists,
+  Store,
+  ShoppingList,
 };

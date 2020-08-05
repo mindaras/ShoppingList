@@ -4,13 +4,15 @@ import { TextInput as RNTextInput, StyleSheet } from "react-native";
 type Props = {
   placeholder?: string;
   spacing?: boolean;
+  value?: string;
   onChange: (text: string) => void;
 };
 
-const TextInput = ({ placeholder, spacing = true, onChange }: Props) => (
+const TextInput = ({ placeholder, spacing = true, value, onChange }: Props) => (
   <RNTextInput
     placeholder={placeholder}
     style={[styles.input, spacing && styles.spacing]}
+    value={value}
     onChangeText={onChange}
     autoCorrect={false}
   />
