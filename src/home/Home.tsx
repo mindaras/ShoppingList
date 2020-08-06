@@ -13,10 +13,9 @@ import { TextInput } from "../../common/components/TextInput";
 import { Button } from "../../common/components/Button";
 import { colors } from "../../common/colors";
 import { HomeLists } from "./HomeLists";
-import { gql, useLazyQuery, NetworkStatus } from "@apollo/client";
+import { gql, useLazyQuery } from "@apollo/client";
 import { Toaster } from "../../common/components/Toaster";
-import AsyncStorage from "@react-native-community/async-storage";
-import { config } from "../../common/config";
+import { storage } from "../../common/storage";
 
 type Props = {
   navigation: Navigation;
@@ -38,17 +37,11 @@ const Home = ({ navigation }: Props) => {
 
   const navigateToList = () => {
     const list = data.shoppingList as ShoppingList;
-    AsyncStorage.getItem(config.storageKey)
-      .then((value) => {
-        const store: Store = value ? JSON.parse(value) : { lists: {} };
-        store.lists[list.id] = { ...list, username };
-        return AsyncStorage.setItem(config.storageKey, JSON.stringify(store));
-      })
-      .then(() => {
-        navigation.navigate(Route.List, { list, username });
-        setUsername("");
-        setListId("");
-      });
+    storage.addList({ ...list, username }).then(() => {
+      navigation.navigate(Route.List, { list, username });
+      setUsername("");
+      setListId("");
+    });
   };
 
   useEffect(() => {

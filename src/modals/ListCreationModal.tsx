@@ -7,8 +7,7 @@ import { Button } from "../../common/components/Button";
 import { FontAwesome } from "@expo/vector-icons";
 import { colors } from "../../common/colors";
 import { gql, useMutation } from "@apollo/client";
-import AsyncStorage from "@react-native-community/async-storage";
-import { config } from "../../common/config";
+import { storage } from "../../common/storage";
 
 const CREATE_LIST = gql`
   mutation createShoppingList($name: String!) {
@@ -30,16 +29,8 @@ const ListCreationModal = ({ navigation }: Props) => {
 
   useEffect(() => {
     if (!data) return;
-
-    const item = data.createShoppingList;
-
-    AsyncStorage.getItem(config.storageKey)
-      .then((value) => {
-        const store: Store = value ? JSON.parse(value) : { lists: {} };
-        store.lists[item.id] = { ...item, username };
-        return AsyncStorage.setItem(config.storageKey, JSON.stringify(store));
-      })
-      .then(navigation.goBack);
+    const list = data.createShoppingList;
+    storage.addList({ ...list, username }).then(navigation.goBack);
   }, [data]);
 
   const submit = () => {
