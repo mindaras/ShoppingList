@@ -1,5 +1,5 @@
 import React, { useState, useEffect, Fragment } from "react";
-import { StyleSheet, Text, View, Clipboard } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { Navigation, Modal, Route, ShoppingList } from "../../common/types";
 import { FontAwesome } from "@expo/vector-icons";
 import { Container } from "../../common/components/Container";

@@ -1,11 +1,5 @@
 import React from "react";
-import {
-  StyleSheet,
-  Text,
-  View,
-  SectionList,
-  DatePickerAndroid,
-} from "react-native";
+import { StyleSheet, Text, View, SectionList } from "react-native";
 import {
   ShoppingListItem,
   ShoppingListItemType,

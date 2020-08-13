@@ -3,7 +3,6 @@ import {
   Navigation,
   Modal,
   ShoppingListItemStatus,
-  Route,
   ShoppingList,
 } from "../../common/types";
 import { Container } from "../../common/components/Container";
