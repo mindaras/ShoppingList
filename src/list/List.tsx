@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Navigation,
   Modal,
@@ -31,13 +31,22 @@ const ITEMS_QUERY = gql`
 `;
 
 const List = ({ navigation, list, username }: Props) => {
-  const { data } = useQuery(ITEMS_QUERY, {
+  const { id } = list;
+  const { data, error, refetch } = useQuery(ITEMS_QUERY, {
     variables: {
-      listId: list.id,
+      listId: id,
       status: ShoppingListItemStatus.PENDING,
     },
   });
   const { shoppingListItems } = data || { shoppingListItems: [] };
+
+  useEffect(() => {
+    return navigation.addListener("focus", () => {
+      if (data || error) {
+        refetch();
+      }
+    });
+  }, [navigation, data, error, refetch]);
 
   return (
     <Container spacing={false}>
@@ -47,13 +56,18 @@ const List = ({ navigation, list, username }: Props) => {
         renderItem={({ item, index }) => (
           <Item
             {...item}
+            username={username}
             navigation={navigation}
             showSeparator={shoppingListItems.length - 1 !== index}
+            listId={id}
+            onChange={refetch}
           />
         )}
       />
       <AddButton
-        onPress={() => navigation.navigate(Modal.UpdateItems, { username })}
+        onPress={() =>
+          navigation.navigate(Modal.MutateItem, { listId: id, username })
+        }
       />
     </Container>
   );

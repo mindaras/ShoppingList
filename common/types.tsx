@@ -1,5 +1,8 @@
+import { ReactNode } from "react";
+
 type NavigationOptions = {
-  title: string;
+  title?: string;
+  headerRight?: (props: { tintColor: string }) => ReactNode;
 };
 
 type Navigation = {
@@ -18,7 +21,8 @@ enum Route {
 
 enum Modal {
   CreateList = "CreateList",
-  UpdateItems = "UpdateItems",
+  MutateItem = "MutateItem",
+  ListSettings = "ListSettings",
 }
 
 enum ShoppingListItemStatus {
@@ -33,7 +37,7 @@ type ShoppingListItem = {
   info: string;
   author: string;
   status: ShoppingListItemStatus;
-  updatedAt?: number;
+  updatedAt?: string;
   updatedBy?: string;
 };
 
@@ -59,8 +63,6 @@ type Store = {
 type ShoppingList = {
   id: string;
   name: string;
-  createdAt: number;
-  updatedAt: number;
 };
 
 export {

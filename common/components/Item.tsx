@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import {
   View,
   Text,
@@ -18,24 +18,41 @@ import {
 import { colors } from "../colors";
 import { RemoveAction } from "./RemoveAction";
 import { screenWidth } from "../dimensions";
+import { gql, useMutation } from "@apollo/client";
+
+const UPDATE_QUERY = gql`
+  mutation updateShoppingListItem(
+    $id: ID!
+    $updatedBy: String!
+    $input: ShoppingListItemInput!
+  ) {
+    updateShoppingListItem(id: $id, updatedBy: $updatedBy, input: $input) {
+      id
+    }
+  }
+`;
+
+const REMOVE_QUERY = gql`
+  mutation removeShoppingListItem($id: ID!, $listId: ID!) {
+    removeShoppingListItem(id: $id, listId: $listId)
+  }
+`;
 
 type LeftActionsProps = {
-  navigation?: Navigation;
-  id: string;
+  onBuy: VoidFunction;
+  onEdit: VoidFunction;
 };
 
-const LeftActions = ({ navigation, id }: LeftActionsProps) => (
+const LeftActions = ({ onBuy, onEdit }: LeftActionsProps) => (
   <View style={styles.actions}>
     <TouchableOpacity
-      onPress={() => {}}
+      onPress={onBuy}
       style={[styles.leftAction, { backgroundColor: colors.success }]}
     >
       <FontAwesome name="check" size={25} color="#fff" />
     </TouchableOpacity>
     <TouchableOpacity
-      onPress={() =>
-        navigation && navigation.navigate(Modal.UpdateItems, { id })
-      }
+      onPress={onEdit}
       style={[styles.leftAction, { backgroundColor: colors.info }]}
     >
       <FontAwesome name="edit" size={25} color="#fff" />
@@ -120,6 +137,9 @@ interface Props extends ShoppingListItem {
   navigation?: Navigation;
   type?: ShoppingListItemType;
   showSeparator?: boolean;
+  listId?: string;
+  username?: string;
+  onChange?: VoidFunction;
 }
 
 const Item = ({
@@ -132,29 +152,66 @@ const Item = ({
   status,
   type,
   showSeparator,
-}: Props) => (
-  <Swipeable
-    enabled={type !== ShoppingListItemType.HISTORY}
-    containerStyle={showSeparator && styles.separation}
-    childrenContainerStyle={styles.container}
-    renderLeftActions={() => <LeftActions navigation={navigation} id={id} />}
-    renderRightActions={(progress) => (
-      <RemoveAction progress={progress as Animated.Value} />
-    )}
-    onSwipeableRightOpen={() => {}}
-    leftThreshold={screenWidth / 5}
-    rightThreshold={screenWidth / 5}
-  >
-    <Users
-      author={author}
-      status={status}
-      updatedBy={updatedBy}
-      itemType={type}
-    />
-    <Text style={styles.text}>{name}</Text>
-    <Text style={styles.text}>{info}</Text>
-  </Swipeable>
-);
+  listId,
+  username,
+  onChange,
+}: Props) => {
+  const ref = useRef<Swipeable>();
+  const [update] = useMutation(UPDATE_QUERY);
+  const [remove] = useMutation(REMOVE_QUERY);
+
+  const buy = async () => {
+    await update({
+      variables: {
+        id,
+        updatedBy: username,
+        input: { status: ShoppingListItemStatus.BOUGHT },
+      },
+    });
+
+    if (onChange) onChange();
+  };
+
+  const removeItem = async () => {
+    await remove({ variables: { id, listId } });
+    if (onChange) onChange();
+  };
+
+  const edit = () => {
+    (navigation as Navigation).navigate(Modal.MutateItem, {
+      itemId: id,
+      name,
+      info,
+      username,
+    });
+    (ref.current as Swipeable).close();
+  };
+
+  return (
+    <Swipeable
+      enabled={type !== ShoppingListItemType.HISTORY}
+      containerStyle={showSeparator && styles.separation}
+      childrenContainerStyle={styles.container}
+      renderLeftActions={() => <LeftActions onBuy={buy} onEdit={edit} />}
+      renderRightActions={(progress) => (
+        <RemoveAction progress={progress as Animated.Value} />
+      )}
+      onSwipeableRightOpen={removeItem}
+      leftThreshold={screenWidth / 5}
+      rightThreshold={screenWidth / 5}
+      ref={(instance) => (ref.current = instance as Swipeable)}
+    >
+      <Users
+        author={author}
+        status={status}
+        updatedBy={updatedBy}
+        itemType={type}
+      />
+      <Text style={styles.text}>{name}</Text>
+      <Text style={styles.text}>{info}</Text>
+    </Swipeable>
+  );
+};
 
 export { Item };
 

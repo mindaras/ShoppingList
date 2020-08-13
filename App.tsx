@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import { StyleSheet } from "react-native";
+import React, { useEffect, FunctionComponent } from "react";
+import { StyleSheet, Text } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -12,7 +12,6 @@ import {
   ShoppingList as ShoppingListType,
 } from "./common/types";
 import { colors } from "./common/colors";
-import { ListMutationModal } from "./src/modals/ListMutationModal";
 import { List } from "./src/list/List";
 import { HistoryList } from "./src/list/HistoryList";
 import { ListCreationModal } from "./src/modals/ListCreationModal";
@@ -20,6 +19,9 @@ import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
 import { config } from "./common/config";
 import { Lists } from "./src/lists/Lists";
 import { Route as NavigationRoute } from "@react-navigation/native";
+import { ItemMutationModal } from "./src/modals/ItemMutationModal";
+import { TouchableOpacity } from "react-native-gesture-handler";
+import { ListSettingsModal } from "./src/modals/ListSettingsModal";
 
 const RootStack = createStackNavigator();
 const MainStack = createStackNavigator();
@@ -38,12 +40,26 @@ const ListStackNavigator = ({
   };
 
   useEffect(() => {
-    navigation.setOptions({ title: list.name });
+    navigation.setOptions({
+      title: list.name,
+      headerRight: ({ tintColor }) => (
+        <TouchableOpacity
+          onPress={() =>
+            navigation.navigate(Modal.ListSettings, { list, username })
+          }
+          style={styles.rightHeaderButton}
+        >
+          <FontAwesome name="cog" size={30} color={tintColor} />
+        </TouchableOpacity>
+      ),
+    });
   }, []);
 
-  const ShoppingList = (props: any) => (
-    <List list={list} username={username} {...props} />
-  );
+  const withListInfo = (Component: FunctionComponent<any>) => {
+    return (props: any) => (
+      <Component list={list} username={username} {...props} />
+    );
+  };
 
   return (
     <ListStack.Navigator
@@ -62,8 +78,11 @@ const ListStackNavigator = ({
         inactiveTintColor: colors.pale,
       }}
     >
-      <ListStack.Screen name={Route.List} component={ShoppingList} />
-      <ListStack.Screen name={Route.History} component={HistoryList} />
+      <ListStack.Screen name={Route.List} component={withListInfo(List)} />
+      <ListStack.Screen
+        name={Route.History}
+        component={withListInfo(HistoryList)}
+      />
     </ListStack.Navigator>
   );
 };
@@ -85,6 +104,14 @@ const MainStackNavigator = () => (
 const client = new ApolloClient({
   uri: config.api,
   cache: new InMemoryCache(),
+  defaultOptions: {
+    watchQuery: {
+      fetchPolicy: "no-cache",
+    },
+    query: {
+      fetchPolicy: "no-cache",
+    },
+  },
 });
 
 const App = () => (
@@ -106,18 +133,23 @@ const App = () => (
           }}
         />
         <RootStack.Screen
-          name={Modal.UpdateItems}
-          component={ListMutationModal}
-          options={{
-            title: "Add an item",
-            headerBackTitle: "Back",
-          }}
+          name={Modal.MutateItem}
+          component={ItemMutationModal}
+          options={{ headerBackTitle: "Back" }}
         />
         <RootStack.Screen
           name={Modal.CreateList}
           component={ListCreationModal}
           options={{
             title: "Create an item",
+            headerBackTitle: "Back",
+          }}
+        />
+        <RootStack.Screen
+          name={Modal.ListSettings}
+          component={ListSettingsModal}
+          options={{
+            title: "List settings",
             headerBackTitle: "Back",
           }}
         />
@@ -134,5 +166,8 @@ const styles = StyleSheet.create({
   },
   header: {
     color: "#000",
+  },
+  rightHeaderButton: {
+    paddingRight: 10,
   },
 });
