@@ -58,6 +58,7 @@ type StoredLists = {
 
 type Store = {
   lists: StoredLists;
+  recentLists: StoredList[];
 };
 
 type ShoppingList = {

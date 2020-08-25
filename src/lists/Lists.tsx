@@ -13,6 +13,7 @@ import Swipeable from "react-native-gesture-handler/Swipeable";
 import { colors } from "../../common/colors";
 import { RemoveAction } from "../../common/components/RemoveAction";
 import { screenWidth } from "../../common/dimensions";
+import { storage } from "../../common/storage";
 
 type Props = {
   navigation: Navigation;
@@ -38,9 +39,11 @@ const Lists = ({ navigation }: Props) => {
           >
             <TouchableOpacity
               onPress={() => {
-                navigation.navigate(Route.List, {
-                  list: { id, name },
-                  username,
+                storage.addRecentList({ id, name, username }).then(() => {
+                  navigation.navigate(Route.List, {
+                    list: { id, name },
+                    username,
+                  });
                 });
               }}
               style={styles.content}

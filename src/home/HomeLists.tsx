@@ -12,18 +12,19 @@ import { RemoveAction } from "../../common/components/RemoveAction";
 import { colors } from "../../common/colors";
 import { useLists } from "../../common/hooks/useLists";
 import { screenWidth } from "../../common/dimensions";
+import { storage } from "../../common/storage";
 
 type Props = {
   navigation: Navigation;
 };
 
 const HomeLists = ({ navigation }: Props) => {
-  const { lists, removeList } = useLists(navigation);
+  const { lists, recentLists, removeList } = useLists(navigation);
 
   return (
     <View>
       <View style={styles.spacing}>
-        {lists.slice(0, 3).map(({ id, name, username }) => (
+        {recentLists.map(({ id, name, username }) => (
           <Swipeable
             key={id}
             containerStyle={styles.separation}
@@ -36,9 +37,11 @@ const HomeLists = ({ navigation }: Props) => {
           >
             <TouchableOpacity
               onPress={() => {
-                navigation.navigate(Route.List, {
-                  list: { id, name },
-                  username,
+                storage.addRecentList({ id, name, username }).then(() => {
+                  navigation.navigate(Route.List, {
+                    list: { id, name },
+                    username,
+                  });
                 });
               }}
               style={styles.content}
