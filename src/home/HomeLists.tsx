@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   StyleSheet,
@@ -20,6 +20,18 @@ type Props = {
 
 const HomeLists = ({ navigation }: Props) => {
   const { lists, recentLists, removeList } = useLists(navigation);
+  const [initialMount, setInitialMount] = useState(true);
+
+  useEffect(() => {
+    if (initialMount && recentLists.length) {
+      const { id, name, username } = recentLists[0];
+      navigation.navigate(Route.List, {
+        list: { id, name },
+        username,
+      });
+      setInitialMount(false);
+    }
+  }, [initialMount, recentLists]);
 
   return (
     <View>

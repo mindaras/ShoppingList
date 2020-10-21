@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Navigation,
   Modal,
@@ -7,7 +7,7 @@ import {
 } from "../../common/types";
 import { Container } from "../../common/components/Container";
 import { gql, useQuery } from "@apollo/client";
-import { FlatList } from "react-native";
+import { FlatList, RefreshControl } from "react-native";
 import { Item } from "../../common/components/Item";
 import { AddButton } from "./AddButton";
 
@@ -36,7 +36,9 @@ const List = ({ navigation, list, username }: Props) => {
       listId: id,
       status: ShoppingListItemStatus.PENDING,
     },
+    pollInterval: 5000,
   });
+  const [refreshing, setRefreshing] = useState(false)
   const { shoppingListItems } = data || { shoppingListItems: [] };
 
   useEffect(() => {
@@ -47,11 +49,18 @@ const List = ({ navigation, list, username }: Props) => {
     });
   }, [navigation, data, error, refetch]);
 
+  const refresh = async () => {
+    setRefreshing(true)
+    await refetch()
+    setRefreshing(false)
+  }
+
   return (
     <Container spacing={false}>
       <FlatList
         data={shoppingListItems}
         keyExtractor={({ id }) => id}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={refresh} />}
         renderItem={({ item, index }) => (
           <Item
             {...item}

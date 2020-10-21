@@ -42,7 +42,7 @@ const ListCreationModal = ({ navigation }: Props) => {
   return (
     <Container style={styles.container}>
       <FontAwesome name="list" size={200} color={colors.secondary} />
-      <TextInput placeholder="List name" onChange={setName} />
+      <TextInput placeholder="List name" autoFocus onChange={setName} />
       <TextInput placeholder="Your name" onChange={setUsername} />
       <Button onPress={submit} text="Create" />
     </Container>

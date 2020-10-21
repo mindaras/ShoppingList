@@ -5,16 +5,18 @@ type Props = {
   placeholder?: string;
   spacing?: boolean;
   value?: string;
+  autoFocus?: boolean;
   onChange: (text: string) => void;
 };
 
-const TextInput = ({ placeholder, spacing = true, value, onChange }: Props) => (
+const TextInput = ({ placeholder, spacing = true, value, autoFocus, onChange }: Props) => (
   <RNTextInput
     placeholder={placeholder}
     style={[styles.input, spacing && styles.spacing]}
     value={value}
     onChangeText={onChange}
     autoCorrect={false}
+    autoFocus={autoFocus}
   />
 );
 

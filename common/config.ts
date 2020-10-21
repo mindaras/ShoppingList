@@ -1,5 +1,5 @@
 const config = {
-  api: "http://localhost:8000",
+  api: "http://157.230.120.19",
   storageKey: "mindarasShoppingList",
 };
 

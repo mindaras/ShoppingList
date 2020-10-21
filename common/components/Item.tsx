@@ -33,8 +33,8 @@ const UPDATE_QUERY = gql`
 `;
 
 const REMOVE_QUERY = gql`
-  mutation removeShoppingListItem($id: ID!, $listId: ID!) {
-    removeShoppingListItem(id: $id, listId: $listId)
+  mutation removeShoppingListItem($id: ID!, $listId: ID!, $updatedBy: String!) {
+    removeShoppingListItem(id: $id, listId: $listId, updatedBy: $updatedBy)
   }
 `;
 
@@ -173,7 +173,7 @@ const Item = ({
   };
 
   const removeItem = async () => {
-    await remove({ variables: { id, listId } });
+    await remove({ variables: { id, listId, updatedBy: username } });
     if (onChange) onChange();
   };
 

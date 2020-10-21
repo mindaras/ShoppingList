@@ -104,7 +104,7 @@ const ItemMutationModal = ({ navigation, route }: Props) => {
           size={200}
           color={colors.secondary}
         />
-        <TextInput placeholder="Name" value={name} onChange={setName} />
+        <TextInput placeholder="Name" autoFocus value={name} onChange={setName} />
         <TextInput placeholder="Info" value={info} onChange={setInfo} />
         <Button onPress={submit} text={itemId ? "Update" : "Create"} />
       </Container>

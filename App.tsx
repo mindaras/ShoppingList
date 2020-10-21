@@ -103,7 +103,17 @@ const MainStackNavigator = () => (
 
 const client = new ApolloClient({
   uri: config.api,
-  cache: new InMemoryCache(),
+  cache: new InMemoryCache({
+    typePolicies: {
+      Query: {
+        fields: {
+          shoppingListItems: {
+            merge: (_, incoming) => incoming
+          }
+        }
+      }
+    }
+  }),
   defaultOptions: {
     watchQuery: {
       fetchPolicy: "no-cache",
