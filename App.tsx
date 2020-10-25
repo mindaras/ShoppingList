@@ -151,7 +151,7 @@ const App = () => (
           name={Modal.CreateList}
           component={ListCreationModal}
           options={{
-            title: "Create an item",
+            title: "Create a list",
             headerBackTitle: "Back",
           }}
         />

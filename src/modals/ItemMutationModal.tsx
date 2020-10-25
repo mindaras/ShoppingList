@@ -1,14 +1,13 @@
 import React, { useState, Fragment } from "react";
-import { StyleSheet } from "react-native";
+import { StyleSheet, Image } from "react-native";
 import { Navigation, Modal } from "../../common/types";
 import { Container } from "../../common/components/Container";
 import { TextInput } from "../../common/components/TextInput";
 import { Button } from "../../common/components/Button";
 import { Route as NavigationRoute } from "@react-navigation/native";
-import { FontAwesome } from "@expo/vector-icons";
-import { colors } from "../../common/colors";
 import { gql, useMutation } from "@apollo/client";
 import { Toaster } from "../../common/components/Toaster";
+import { createItemImage, editItemImage } from "../../assets";
 
 type Props = {
   navigation: Navigation;
@@ -99,11 +98,7 @@ const ItemMutationModal = ({ navigation, route }: Props) => {
         show={!!creationError || !!updateError}
       />
       <Container style={styles.container}>
-        <FontAwesome
-          name={itemId ? "edit" : "plus"}
-          size={200}
-          color={colors.secondary}
-        />
+        <Image source={itemId ? editItemImage : createItemImage} style={styles.image} />
         <TextInput placeholder="Name" autoFocus value={name} onChange={setName} />
         <TextInput placeholder="Info" value={info} onChange={setInfo} />
         <Button onPress={submit} text={itemId ? "Update" : "Create"} />
@@ -118,5 +113,11 @@ const styles = StyleSheet.create({
   container: {
     paddingTop: 15,
     alignItems: "center",
+  },
+  image: {
+    width: 200,
+    height: 200,
+    resizeMode: 'contain',
+    marginBottom: 20
   },
 });

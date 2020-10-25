@@ -1,5 +1,5 @@
 const config = {
-  api: "http://157.230.120.19",
+  api: "https://shopping-list-api-wo4ox.ondigitalocean.app",
   storageKey: "mindarasShoppingList",
 };
 

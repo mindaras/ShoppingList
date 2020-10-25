@@ -1,5 +1,5 @@
 import React, { useState, useEffect, Fragment } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, Image } from "react-native";
 import { Navigation, Modal, Route, ShoppingList } from "../../common/types";
 import { FontAwesome } from "@expo/vector-icons";
 import { Container } from "../../common/components/Container";
@@ -10,6 +10,7 @@ import { HomeLists } from "./HomeLists";
 import { gql, useLazyQuery } from "@apollo/client";
 import { Toaster } from "../../common/components/Toaster";
 import { storage } from "../../common/storage";
+import { basketImage } from "../../assets";
 
 type Props = {
   navigation: Navigation;
@@ -56,12 +57,7 @@ const Home = ({ navigation }: Props) => {
       <Container scrollable={true} spacing={false} style={styles.container}>
         <View style={styles.content}>
           <Text style={[styles.heading, styles.spacing]}>Shopping List</Text>
-          <FontAwesome
-            name="shopping-basket"
-            size={200}
-            style={styles.spacing}
-            color={colors.primary}
-          />
+          <Image source={basketImage} style={[styles.image, styles.spacing]} />
           <TextInput
             placeholder="Name"
             value={username}
@@ -101,6 +97,12 @@ const styles = StyleSheet.create({
     fontSize: 34,
     color: colors.primary,
     fontWeight: "bold",
+  },
+  image: {
+    width: 200,
+    height: 200,
+    resizeMode: 'contain',
+    marginLeft: 20
   },
   spacing: {
     marginBottom: 20,
