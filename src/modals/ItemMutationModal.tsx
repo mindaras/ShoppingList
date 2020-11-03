@@ -1,5 +1,5 @@
 import React, { useState, Fragment } from "react";
-import { StyleSheet, Image } from "react-native";
+import { StyleSheet, Text } from "react-native";
 import { Navigation, Modal } from "../../common/types";
 import { Container } from "../../common/components/Container";
 import { TextInput } from "../../common/components/TextInput";
@@ -7,7 +7,7 @@ import { Button } from "../../common/components/Button";
 import { Route as NavigationRoute } from "@react-navigation/native";
 import { gql, useMutation } from "@apollo/client";
 import { Toaster } from "../../common/components/Toaster";
-import { createItemImage, editItemImage } from "../../assets";
+import { colors } from "../../common/colors";
 
 type Props = {
   navigation: Navigation;
@@ -15,6 +15,7 @@ type Props = {
 };
 
 type RouteParams = {
+  listName: string;
   name?: string;
   info?: string;
   itemId?: string;
@@ -58,6 +59,7 @@ const UPDATE_QUERY = gql`
 const ItemMutationModal = ({ navigation, route }: Props) => {
   const {
     listId,
+    listName,
     itemId,
     name: itemName,
     info: itemInfo,
@@ -68,7 +70,7 @@ const ItemMutationModal = ({ navigation, route }: Props) => {
   const [create, { error: creationError }] = useMutation(CREATE_QUERY);
   const [update, { error: updateError }] = useMutation(UPDATE_QUERY);
 
-  navigation.setOptions({ title: itemName || "Add an item" });
+  navigation.setOptions({ title: listName });
 
   const submit = async () => {
     if (name.trim()) {
@@ -98,9 +100,9 @@ const ItemMutationModal = ({ navigation, route }: Props) => {
         show={!!creationError || !!updateError}
       />
       <Container style={styles.container}>
-        <Image source={itemId ? editItemImage : createItemImage} style={styles.image} />
-        <TextInput placeholder="Name" autoFocus value={name} onChange={setName} />
-        <TextInput placeholder="Info" value={info} onChange={setInfo} />
+        <Text style={styles.heading}>{itemId ? 'Update' : 'Create'} an item</Text>
+        <TextInput placeholder="Name" maxLength={40} autoFocus value={name} onChange={setName} />
+        <TextInput placeholder="Info (e.g. 20 units)" maxLength={14} value={info} onChange={setInfo} />
         <Button onPress={submit} text={itemId ? "Update" : "Create"} />
       </Container>
     </Fragment>
@@ -114,10 +116,10 @@ const styles = StyleSheet.create({
     paddingTop: 15,
     alignItems: "center",
   },
-  image: {
-    width: 200,
-    height: 200,
-    resizeMode: 'contain',
+  heading: {
+    fontSize: 24,
+    color: colors.primary,
+    fontWeight: "bold",
     marginBottom: 20
   },
 });

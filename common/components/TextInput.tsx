@@ -6,17 +6,19 @@ type Props = {
   spacing?: boolean;
   value?: string;
   autoFocus?: boolean;
+  maxLength?: number;
   onChange: (text: string) => void;
 };
 
-const TextInput = ({ placeholder, spacing = true, value, autoFocus, onChange }: Props) => (
+const TextInput = ({ placeholder, spacing = true, value, autoFocus, maxLength, onChange }: Props) => (
   <RNTextInput
     placeholder={placeholder}
     style={[styles.input, spacing && styles.spacing]}
     value={value}
-    onChangeText={onChange}
     autoCorrect={false}
     autoFocus={autoFocus}
+    maxLength={maxLength}
+    onChangeText={onChange}
   />
 );
 

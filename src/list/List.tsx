@@ -30,7 +30,7 @@ const ITEMS_QUERY = gql`
 `;
 
 const List = ({ navigation, list, username }: Props) => {
-  const { id } = list;
+  const { id, name } = list;
   const { data, error, refetch } = useQuery(ITEMS_QUERY, {
     variables: {
       listId: id,
@@ -68,13 +68,14 @@ const List = ({ navigation, list, username }: Props) => {
             navigation={navigation}
             showSeparator={shoppingListItems.length - 1 !== index}
             listId={id}
+            listName={name}
             onChange={refetch}
           />
         )}
       />
       <AddButton
         onPress={() =>
-          navigation.navigate(Modal.MutateItem, { listId: id, username })
+          navigation.navigate(Modal.MutateItem, { listId: id, listName: name, username })
         }
       />
     </Container>

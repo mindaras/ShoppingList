@@ -138,6 +138,7 @@ interface Props extends ShoppingListItem {
   type?: ShoppingListItemType;
   showSeparator?: boolean;
   listId?: string;
+  listName?: string;
   username?: string;
   onChange?: VoidFunction;
 }
@@ -153,6 +154,7 @@ const Item = ({
   type,
   showSeparator,
   listId,
+  listName,
   username,
   onChange,
 }: Props) => {
@@ -179,6 +181,7 @@ const Item = ({
 
   const edit = () => {
     (navigation as Navigation).navigate(Modal.MutateItem, {
+      listName,
       itemId: id,
       name,
       info,
@@ -207,8 +210,8 @@ const Item = ({
         updatedBy={updatedBy}
         itemType={type}
       />
-      <Text style={styles.text}>{name}</Text>
-      <Text style={styles.text}>{info}</Text>
+      <Text style={[styles.text, styles.name]} numberOfLines={1}>{name}</Text>
+      <Text style={[styles.text, styles.info]} numberOfLines={1}>{info}</Text>
     </Swipeable>
   );
 };
@@ -225,6 +228,12 @@ const styles = StyleSheet.create({
   },
   text: {
     color: "#000",
+  },
+  name: {
+    maxWidth: '68%'
+  },
+  info: {
+    maxWidth: '30%'
   },
   separation: {
     borderBottomWidth: StyleSheet.hairlineWidth,

@@ -10,7 +10,7 @@ import { HomeLists } from "./HomeLists";
 import { gql, useLazyQuery } from "@apollo/client";
 import { Toaster } from "../../common/components/Toaster";
 import { storage } from "../../common/storage";
-import { basketImage } from "../../assets";
+import { logoImage } from "../../assets";
 
 type Props = {
   navigation: Navigation;
@@ -57,7 +57,7 @@ const Home = ({ navigation }: Props) => {
       <Container scrollable={true} spacing={false} style={styles.container}>
         <View style={styles.content}>
           <Text style={[styles.heading, styles.spacing]}>Shopping List</Text>
-          <Image source={basketImage} style={[styles.image, styles.spacing]} />
+          <Image source={logoImage} style={[styles.image, styles.spacing]} />
           <TextInput
             placeholder="Name"
             value={username}
@@ -102,7 +102,6 @@ const styles = StyleSheet.create({
     width: 200,
     height: 200,
     resizeMode: 'contain',
-    marginLeft: 20
   },
   spacing: {
     marginBottom: 20,

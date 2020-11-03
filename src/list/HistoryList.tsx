@@ -47,7 +47,11 @@ const HistoryList = ({ list }: Props) => {
   const items = Object.entries(sections).map(([title, data]) => ({
     title,
     data,
-  }));
+  })).sort((a, b) => new Date(b.title).getTime() - new Date(a.title).getTime())
+
+  if (items?.[0]?.title === new Date().toDateString()) {
+    items[0].title = 'Today'
+  }
 
   return (
     <Container style={styles.container}>

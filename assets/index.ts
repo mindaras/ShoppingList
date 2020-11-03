@@ -1,6 +1,3 @@
-const basketImage = require('./basket.png');
-const createListImage = require('./create_list.png');
-const createItemImage = require('./create_item.png');
-const editItemImage = require('./edit_item.png');
+const logoImage = require('./logo.jpg');
 
-export { basketImage, createListImage, createItemImage, editItemImage }
+export { logoImage }
