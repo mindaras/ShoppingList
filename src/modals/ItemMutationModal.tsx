@@ -8,6 +8,7 @@ import { Route as NavigationRoute } from "@react-navigation/native";
 import { gql, useMutation } from "@apollo/client";
 import { Toaster } from "../../common/components/Toaster";
 import { colors } from "../../common/colors";
+import { BannerAd } from "../ads/BannerAd";
 
 type Props = {
   navigation: Navigation;
@@ -100,10 +101,28 @@ const ItemMutationModal = ({ navigation, route }: Props) => {
         show={!!creationError || !!updateError}
       />
       <Container style={styles.container}>
-        <Text style={styles.heading}>{itemId ? 'Update' : 'Create'} an item</Text>
-        <TextInput placeholder="Name" maxLength={40} autoFocus value={name} onChange={setName} />
-        <TextInput placeholder="Info (e.g. 20 units)" maxLength={14} value={info} onChange={setInfo} />
-        <Button onPress={submit} text={itemId ? "Update" : "Create"} />
+        <Text style={styles.heading}>
+          {itemId ? "Update" : "Create"} an item
+        </Text>
+        <TextInput
+          placeholder="Name"
+          maxLength={40}
+          autoFocus
+          value={name}
+          onChange={setName}
+        />
+        <TextInput
+          placeholder="Info (e.g. 20 units)"
+          maxLength={14}
+          value={info}
+          onChange={setInfo}
+        />
+        <Button
+          onPress={submit}
+          text={itemId ? "Update" : "Create"}
+          style={styles.button}
+        />
+        <BannerAd />
       </Container>
     </Fragment>
   );
@@ -120,6 +139,8 @@ const styles = StyleSheet.create({
     fontSize: 24,
     color: colors.primary,
     fontWeight: "bold",
-    marginBottom: 20
+  },
+  button: {
+    marginBottom: 40,
   },
 });

@@ -7,6 +7,7 @@ import { Button } from "../../common/components/Button";
 import { gql, useMutation } from "@apollo/client";
 import { storage } from "../../common/storage";
 import { colors } from "../../common/colors";
+import { BannerAd } from "../ads/BannerAd";
 
 const CREATE_LIST = gql`
   mutation createShoppingList($name: String!) {
@@ -43,7 +44,8 @@ const ListCreationModal = ({ navigation }: Props) => {
       <Text style={styles.heading}>Create a list</Text>
       <TextInput placeholder="List name" autoFocus onChange={setName} />
       <TextInput placeholder="Your name" onChange={setUsername} />
-      <Button onPress={submit} text="Create" />
+      <Button onPress={submit} text="Create" style={styles.button} />
+      <BannerAd />
     </Container>
   );
 };
@@ -59,6 +61,9 @@ const styles = StyleSheet.create({
     fontSize: 24,
     color: colors.primary,
     fontWeight: "bold",
-    marginBottom: 20
+    marginBottom: 20,
+  },
+  button: {
+    marginBottom: 40,
   },
 });

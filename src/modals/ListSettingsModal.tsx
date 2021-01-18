@@ -21,16 +21,16 @@ const ListSettingsModal = ({ route }: Props) => {
 
   return (
     <Container style={styles.container}>
-      <View>
-        <Text style={styles.heading}>General information</Text>
-        <Text style={styles.spacing}>
-          <Text style={styles.bold}>List name:</Text> {list.name}
-        </Text>
-        <Text style={styles.spacing}>
-          <Text style={styles.bold}>Joined as:</Text> {username}
-        </Text>
-        <Text style={[styles.bold, styles.spacing]}>List ID:</Text>
-        <View style={styles.idContainer}>
+      <Text style={styles.heading}>General information</Text>
+      <Text style={styles.spacing}>
+        <Text style={styles.bold}>List name:</Text> {list.name}
+      </Text>
+      <Text style={styles.spacing}>
+        <Text style={styles.bold}>Joined as:</Text> {username}
+      </Text>
+      <View style={styles.inline}>
+        <Text style={styles.bold}>List ID: </Text>
+        <View style={styles.inline}>
           <Text style={styles.id}>{list.id}</Text>
           <TouchableOpacity onPress={() => Clipboard.setString(list.id)}>
             <FontAwesome name="copy" size={20} color={colors.primary} />
@@ -46,11 +46,9 @@ export { ListSettingsModal };
 const styles = StyleSheet.create({
   container: {
     paddingTop: 40,
-    alignItems: "center",
   },
   heading: {
     fontSize: 24,
-    textAlign: "center",
     color: colors.primary,
     fontWeight: "bold",
     marginBottom: 20,
@@ -61,16 +59,10 @@ const styles = StyleSheet.create({
   bold: {
     fontWeight: "bold",
   },
-  idContainer: {
+  inline: {
     flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    padding: 20,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: colors.pale,
-    borderRadius: 4,
   },
   id: {
-    marginRight: 20,
+    marginRight: 10,
   },
 });

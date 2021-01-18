@@ -14,14 +14,15 @@ const Container: React.FunctionComponent<Props> = ({
   style,
 }) => {
   const Wrapper = scrollable ? ScrollView : View;
+  const props = {
+    style: [styles.container, spacing && styles.spacing, !scrollable && style],
+  };
 
-  return (
-    <Wrapper
-      style={[styles.container, spacing && { paddingHorizontal: 20 }, style]}
-    >
-      {children}
-    </Wrapper>
-  );
+  if (scrollable) {
+    (props as any).contentContainerStyle = style;
+  }
+
+  return <Wrapper {...props}>{children}</Wrapper>;
 };
 
 export { Container };
@@ -30,5 +31,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
+  },
+  spacing: {
+    paddingHorizontal: 20,
   },
 });

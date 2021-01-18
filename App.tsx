@@ -1,4 +1,4 @@
-import React, { useEffect, FunctionComponent } from "react";
+import React, { useEffect, FunctionComponent, useState } from "react";
 import { StyleSheet } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
@@ -22,6 +22,7 @@ import { Route as NavigationRoute } from "@react-navigation/native";
 import { ItemMutationModal } from "./src/modals/ItemMutationModal";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { ListSettingsModal } from "./src/modals/ListSettingsModal";
+import { setTestDeviceIDAsync } from "expo-ads-admob";
 
 const RootStack = createStackNavigator();
 const MainStack = createStackNavigator();
@@ -108,11 +109,11 @@ const client = new ApolloClient({
       Query: {
         fields: {
           shoppingListItems: {
-            merge: (_, incoming) => incoming
-          }
-        }
-      }
-    }
+            merge: (_, incoming) => incoming,
+          },
+        },
+      },
+    },
   }),
   defaultOptions: {
     watchQuery: {
@@ -124,49 +125,63 @@ const client = new ApolloClient({
   },
 });
 
-const App = () => (
-  <ApolloProvider client={client}>
-    <NavigationContainer>
-      <RootStack.Navigator
-        mode="modal"
-        screenOptions={{
-          headerTintColor: colors.primary,
-          headerTitleStyle: styles.header,
-          cardStyle: styles.screen,
-        }}
-      >
-        <RootStack.Screen
-          name="Main"
-          component={MainStackNavigator}
-          options={{
-            headerShown: false,
-          }}
-        />
-        <RootStack.Screen
-          name={Modal.MutateItem}
-          component={ItemMutationModal}
-          options={{ headerBackTitle: "Back" }}
-        />
-        <RootStack.Screen
-          name={Modal.CreateList}
-          component={ListCreationModal}
-          options={{
-            title: "",
-            headerBackTitle: "Back",
-          }}
-        />
-        <RootStack.Screen
-          name={Modal.ListSettings}
-          component={ListSettingsModal}
-          options={{
-            title: "List settings",
-            headerBackTitle: "Back",
-          }}
-        />
-      </RootStack.Navigator>
-    </NavigationContainer>
-  </ApolloProvider>
-);
+const App = () => {
+  const [testDeviceLoading, setTestDeviceLoading] = useState(
+    config.isDev ? true : false
+  );
+
+  useEffect(() => {
+    if (config.isDev) {
+      setTestDeviceIDAsync("EMULATOR").then(() => setTestDeviceLoading(false));
+    }
+  }, []);
+
+  return (
+    <ApolloProvider client={client}>
+      {!testDeviceLoading && (
+        <NavigationContainer>
+          <RootStack.Navigator
+            mode="modal"
+            screenOptions={{
+              headerTintColor: colors.primary,
+              headerTitleStyle: styles.header,
+              cardStyle: styles.screen,
+            }}
+          >
+            <RootStack.Screen
+              name="Main"
+              component={MainStackNavigator}
+              options={{
+                headerShown: false,
+              }}
+            />
+            <RootStack.Screen
+              name={Modal.MutateItem}
+              component={ItemMutationModal}
+              options={{ headerBackTitle: "Back" }}
+            />
+            <RootStack.Screen
+              name={Modal.CreateList}
+              component={ListCreationModal}
+              options={{
+                title: "",
+                headerBackTitle: "Back",
+              }}
+            />
+            <RootStack.Screen
+              name={Modal.ListSettings}
+              component={ListSettingsModal}
+              options={{
+                title: "List settings",
+                headerBackTitle: "Back",
+              }}
+            />
+          </RootStack.Navigator>
+        </NavigationContainer>
+      )}
+    </ApolloProvider>
+  );
+};
 
 export default App;
 
